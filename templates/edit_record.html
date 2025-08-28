@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="card">
+	<h2>Edit Record</h2>
+	<form method="post" class="form-grid grid-3">
+		<label>Date
+			<input type="date" name="work_date" value="{{ record['work_date'] }}" required />
+		</label>
+		<label>Check In
+			<input type="time" name="check_in" value="{{ record['check_in'] }}" />
+		</label>
+		<label>Check Out
+			<input type="time" name="check_out" value="{{ record['check_out'] }}" />
+		</label>
+		<label>Hourly Rate
+			<input type="number" step="0.01" min="0" name="hourly_rate" value="{{ record['hourly_rate'] or 0 }}" required />
+		</label>
+		<div></div>
+		<button class="btn primary" type="submit">Update</button>
+	</form>
+</div>
+{% endblock %}

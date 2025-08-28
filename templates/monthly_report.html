@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="section">
+	<h2>Monthly Report</h2>
+	<form method="get" action="{{ url_for('report') }}" class="form-grid grid-3">
+		<label>Select Month
+			<input type="month" name="month" value="{{ month_selector }}" />
+		</label>
+		<div></div>
+		<button class="btn primary" type="submit">Load</button>
+	</form>
+
+	<div class="row-actions" style="margin-top:0.75rem">
+		<a class="btn ghost" href="{{ url_for('export_excel', month=month_selector) }}">Export Excel</a>
+		<a class="btn ghost" href="{{ url_for('export_pdf', month=month_selector) }}">Export PDF</a>
+	</div>
+</div>
+
+<div class="card section">
+	<div class="table-wrapper">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Check In</th>
+					<th>Check Out</th>
+					<th>Hours</th>
+					<th>Rate</th>
+					<th>Daily Salary</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for r in rows %}
+				<tr>
+					<td>{{ r['work_date'] }}</td>
+					<td>{{ r['check_in'] or '-' }}</td>
+					<td>{{ r['check_out'] or '-' }}</td>
+					<td>{{ r['total_hours'] or 0 }}</td>
+					<td>{{ r['hourly_rate'] or 0 }}</td>
+					<td>{{ r['daily_salary'] or 0 }}</td>
+					<td class="row-actions">
+						<a class="btn ghost" href="{{ url_for('edit_record', record_id=r['id']) }}">Edit</a>
+						<form method="post" action="{{ url_for('delete_record', record_id=r['id']) }}" onsubmit="return confirm('Delete this record?');">
+							<button class="btn danger" type="submit">Delete</button>
+						</form>
+					</td>
+				</tr>
+				{% else %}
+				<tr><td colspan="7" style="color:var(--muted)">No records for this month.</td></tr>
+				{% endfor %}
+			</tbody>
+			<tfoot>
+				<tr>
+					<th>Totals</th>
+					<th></th>
+					<th></th>
+					<th>{{ total_hours }}</th>
+					<th></th>
+					<th>{{ total_salary }}</th>
+					<th></th>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+</div>
+{% endblock %}

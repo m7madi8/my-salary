@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="theme-color" content="#0b0b0f" />
+	<title>{{ app_name }}</title>
+	<link rel="icon" href="{{ url_for('static', filename='99cafe.png') }}" />
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+	<nav class="navbar">
+		<div class="brand"><img class="logo" src="{{ url_for('static', filename='99cafe.png') }}" alt="99cafe" /> {{ app_name }}</div>
+		<button type="button" class="menu-toggle" aria-controls="primary-navigation" aria-expanded="false" aria-label="Toggle menu"><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+		<ul id="primary-navigation" class="nav-links">
+			{% if session.get('user_id') %}
+			<li><a href="{{ url_for('home') }}">Home</a></li>
+			<li><a href="{{ url_for('add_record') }}">Add Record</a></li>
+			<li><a href="{{ url_for('report') }}">Monthly Report</a></li>
+			<li><a href="{{ url_for('logout') }}">Logout</a></li>
+			{% endif %}
+		</ul>
+	</nav>
+	<div class="backdrop" id="backdrop" hidden></div>
+
+	<main class="container">
+		{% with messages = get_flashed_messages(with_categories=true) %}
+		  {% if messages %}
+		  <div class="flash-area">
+		  {% for category, message in messages %}
+			<div class="flash {{ category }}">{{ message }}</div>
+		  {% endfor %}
+		  </div>
+		  {% endif %}
+		{% endwith %}
+
+		{% block content %}{% endblock %}
+	</main>
+
+	<footer class="footer">
+	</footer>
+	<script>
+		(function() {
+			var toggle = document.querySelector('.menu-toggle');
+			var nav = document.getElementById('primary-navigation');
+			var backdrop = document.getElementById('backdrop');
+			if (!toggle || !nav || !backdrop) return;
+
+			function openDrawer() {
+				nav.classList.add('open');
+				toggle.classList.add('active');
+				toggle.setAttribute('aria-expanded', 'true');
+				backdrop.hidden = false;
+				requestAnimationFrame(function(){ backdrop.classList.add('show'); });
+				document.body.style.overflow = 'hidden';
+			}
+
+			function closeDrawer() {
+				nav.classList.remove('open');
+				toggle.classList.remove('active');
+				toggle.setAttribute('aria-expanded', 'false');
+				backdrop.classList.remove('show');
+				setTimeout(function(){ backdrop.hidden = true; }, 200);
+				document.body.style.overflow = '';
+			}
+
+			function toggleDrawer() {
+				if (nav.classList.contains('open')) closeDrawer(); else openDrawer();
+			}
+
+			toggle.addEventListener('click', toggleDrawer);
+			backdrop.addEventListener('click', closeDrawer);
+
+			document.addEventListener('keydown', function(e){
+				if (e.key === 'Escape') closeDrawer();
+			});
+
+			nav.addEventListener('click', function(e){
+				var el = e.target;
+				if (el.tagName === 'A') closeDrawer();
+			});
+
+			var links = nav.querySelectorAll('a');
+			links.forEach(function(a){
+				a.addEventListener('click', function(e){
+					var isMobile = window.getComputedStyle(toggle).display !== 'none';
+					if (!isMobile) return;
+					e.preventDefault();
+					var href = a.getAttribute('href');
+					closeDrawer();
+					setTimeout(function(){ window.location.href = href; }, 60);
+				});
+			});
+
+			window.addEventListener('resize', function(){
+				if (window.innerWidth > 680) closeDrawer();
+			});
+
+
+		})();
+	</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+
+{% extends 'layout.html' %}
+{% block content %}
+<div class="card auth-card">
+	<h2>Login</h2>
+	<form method="post" class="form-grid">
+		<label>Username
+			<input type="text" name="username" autocomplete="username" required />
+		</label>
+		<label>Password
+			<input type="password" name="password" autocomplete="current-password" required />
+		</label>
+		<button class="btn primary" type="submit">Login</button>
+	</form>
+</div>
+{% endblock %}
