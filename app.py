@@ -23,7 +23,7 @@ from flask import (
 from flask_cors import CORS
 
 APP_NAME = "  My Salary Tracker"
-DB_PATH = os.path.join(os.path.dirname(__file__), "database.sqlite3")
+DB_PATH = os.environ.get("DB_PATH") or os.path.join(os.path.dirname(__file__), "database.sqlite3")
 SECRET_KEY = os.environ.get("SECRET_KEY", "change-this-secret-key")
 DEFAULT_USERNAME = os.environ.get("INIT_USERNAME", "Mohammad")
 DEFAULT_PASSWORD = os.environ.get("INIT_PASSWORD", "408809937")
